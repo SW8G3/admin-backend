@@ -42,14 +42,27 @@ const getEdges = async (req, res) => {
     }
 }
 
+const getEdgeById = async (req, res) => {
+    const id = Number(req.params.id);
+    try {
+        const edge = await prisma.edge.findUnique({
+            where: {
+                id: parseInt(id)
+            }
+        });
+        res.json(edge);
+    } catch (error) {
+        res.status(500).json({ 'error': error });
+    }
+}
+
 // Create an edge connecting two nodes
 const createEdge = async (req, res) => {
-    const id = Number(req.params.id);
-    const { nodeBId } = req.body;
+    const { nodeAId, nodeBId } = req.body;
     try {
         const edge = await prisma.edge.create({
             data: {
-                nodeAId: parseInt(id),
+                nodeAId,
                 nodeBId
             }
         });
@@ -109,6 +122,7 @@ const deleteEdge = async (req, res) => {
 module.exports = {
     appendEdge,
     getEdges,
+    getEdgeById,
     createEdge,
     removeEdge,
     deleteEdge

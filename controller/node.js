@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 // Get all nodes
 const getNodes = async (req, res) => {
+
     try {
         const nodes = await prisma.node.findMany();
         res.json(nodes);
@@ -30,6 +31,8 @@ const getNodeById = async (req, res) => {
 // Create a new node
 const createNode = async (req, res) => {
     const { hasElevator, hasStairs, hasDoor, searchTags, floor, building, edges } = req.body;
+    console.log(req.body);
+    console.log(hasElevator, hasStairs, hasDoor, searchTags, floor, building, edges);
     try {
         const node = await prisma.node.create({
             data: {
