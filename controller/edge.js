@@ -67,7 +67,7 @@ const createEdge = async (req, res) => {
             }
         });
         
-        await appendEdge(edge, id);
+        await appendEdge(edge, nodeAId);
         await appendEdge(edge, nodeBId)
         
         res.json(edge);
