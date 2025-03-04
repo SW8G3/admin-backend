@@ -12,12 +12,11 @@ const appendEdge = async ( edge, nodeID ) => {
             },
             data: {
                 edges: {
-                    connect: {
-                        id: edge.id
-                    }
+                    push: edge
                 }
             }
         });
+
         return node;
     } catch (error) {
         return error;
@@ -58,17 +57,20 @@ const getEdgeById = async (req, res) => {
 
 // Create an edge connecting two nodes
 const createEdge = async (req, res) => {
-    const { nodeAId, nodeBId } = req.body;
+    const { nodeAId, nodeBId, weight, clearance, obstructed } = req.body;
     try {
         const edge = await prisma.edge.create({
             data: {
                 nodeAId,
-                nodeBId
+                nodeBId,
+                weight,
+                clearance,
+                obstructed
             }
         });
         
-        await appendEdge(edge, nodeAId);
-        await appendEdge(edge, nodeBId)
+        await appendEdge(edge.id, nodeAId);
+        await appendEdge(edge.id, nodeBId)
         
         res.json(edge);
     } catch (error) {
@@ -119,11 +121,23 @@ const deleteEdge = async (req, res) => {
     }
 }
 
+// Drop all edges from database
+const dropEdges = async (req, res) => {
+    try {
+        await prisma.edge.deleteMany();
+        res.json({ message: 'All edges deleted' });
+    } catch (error) {
+        res.status(500).json({ 'error': error });
+    }
+}
+
+
 module.exports = {
     appendEdge,
     getEdges,
     getEdgeById,
     createEdge,
     removeEdge,
-    deleteEdge
+    deleteEdge,
+    dropEdges
 };

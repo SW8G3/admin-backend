@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 // Get all nodes
 const getNodes = async (req, res) => {
-
     try {
         const nodes = await prisma.node.findMany();
         res.json(nodes);
@@ -31,8 +30,6 @@ const getNodeById = async (req, res) => {
 // Create a new node
 const createNode = async (req, res) => {
     const { hasElevator, hasStairs, hasDoor, searchTags, floor, building, edges } = req.body;
-    console.log(req.body);
-    console.log(hasElevator, hasStairs, hasDoor, searchTags, floor, building, edges);
     try {
         const node = await prisma.node.create({
             data: {
@@ -47,6 +44,7 @@ const createNode = async (req, res) => {
         });
         res.json(node);
     } catch (error) {
+        console.log("test");
         res.status(500).json({ 'error': error });
     }
 }
@@ -103,10 +101,21 @@ const deleteNode = async (req, res) => {
     }
 }
 
+// Drop all nodes from database
+const dropNodes = async (req, res) => {
+    try {
+        await prisma.node.deleteMany();
+        res.json({ message: 'All nodes deleted' });
+    } catch (error) {
+        res.status(500).json({ 'error': error });
+    }
+}
+
 module.exports = {
     getNodes,
     getNodeById,
     createNode,
     updateNode,
-    deleteNode
+    deleteNode,
+    dropNodes
 };
