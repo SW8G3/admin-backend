@@ -6,6 +6,16 @@ const prisma = new PrismaClient();
 
 const uploadGraph = async (req, res) => {
     console.log(req.body);
+    // First drop all edges and nodes from the database
+    try {
+        await prisma.edge.deleteMany();
+        await prisma.node.deleteMany();
+    }
+    catch (error) {
+        res.status(500).json({ 'error': error });
+        console.error(error);
+    }
+    // Then upload the new graph
     try {
         const nodes = req.body.nodes;
         const edges = req.body.edges;
@@ -19,6 +29,7 @@ const uploadGraph = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ 'error': error });
+        console.error(error);
     }
 }
 

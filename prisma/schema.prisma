@@ -31,6 +31,7 @@ model User {
 model Node {
   id            Int @id @default(autoincrement())
   isWaypoint    Boolean
+  position      Float[]
   //hasElevator   Boolean
   //hasStairs     Boolean
   //hasDoor       Boolean
@@ -43,11 +44,11 @@ model Node {
 
 model Edge {
   id            Int @id @default(autoincrement())
-  nodeAId       Int       // This is sub-optimal. A better way would be to have a relation to the Node model
+  from       Int       // This is sub-optimal. A better way would be to have a relation to the Node model
   // nodeA         Node
-  nodeBId       Int       // This is sub-optimal. A better way would be to have a relation to the Node model
+  to               Int       // This is sub-optimal. A better way would be to have a relation to the Node model
   // nodeB         Node
-  weight        Float
+  distance        Float
   //clearance     Int
   //obstructed    Boolean
 }
