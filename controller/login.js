@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 
 const getToken = async ( req, res ) => {
     try {
-        return null
+        res.send("You are in! You hacker...");
     } catch (error) {
-        return error;
+        return res.status(500).json({ error: error.message });
     }
 }
 
