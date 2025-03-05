@@ -33,8 +33,21 @@ const uploadGraph = async (req, res) => {
     }
 }
 
+const downloadGraph = async (req, res) => {
+    try {
+        const nodes = await prisma.node.findMany();
+        const edges = await prisma.edge.findMany();
+        res.json({ nodes, edges });
+    }
+    catch (error) {
+        res.status(500).json({ 'error': error });
+        console.error(error);
+    }
+}
+
 
 
 module.exports = {
-    uploadGraph
+    uploadGraph,
+    downloadGraph
 };
