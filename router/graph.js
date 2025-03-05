@@ -3,7 +3,7 @@ const router = express.Router();
 
 const graph = require('../controller/graph');
 
-router.get('/get', graph.downloadGraph);
+router.get('/download', graph.downloadGraph);
 
 router.post('/upload', graph.uploadGraph);
 
