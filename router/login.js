@@ -30,8 +30,17 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.json({ message: 'Login successful', user: {id: req.user.id, email: req.user.email } });
+
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user) => {
+        if (err) return next(err);
+        if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+
+        req.logIn(user, (loginErr) => {
+            if (loginErr) return next(loginErr);
+            res.json({ message: 'Login successful', user: { id: user.id, email: user.email }});
+        });
+    })(req, res, next);
 });
 
 router.post('/logout', (req, res, next) => {
