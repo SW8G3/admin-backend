@@ -14,7 +14,7 @@ const getNodes = async (req, res) => {
 
 // Get node by id
 const getNodeById = async (req, res) => {
-    const id = Number(req.params.id);
+    const id = req.body.id;
     try {
         const node = await prisma.node.findUnique({
             where: {
@@ -51,7 +51,7 @@ const createNode = async (req, res) => {
 
 // Update a node
 const updateNode = async (req, res) => {
-    const id = Number(req.params.id);
+    const id = req.body.id;
     const { hasElevator, hasStairs, hasDoor, searchTags, floor, building, edges } = req.body;
     try {
         const node = await prisma.node.update({
@@ -76,7 +76,7 @@ const updateNode = async (req, res) => {
 
 // Delete a node
 const deleteNode = async (req, res) => {
-    const id = Number(req.params.id);
+    const id = req.body.id;
     try {
         await prisma.edge.deleteMany({
             where: {
@@ -105,6 +105,7 @@ const deleteNode = async (req, res) => {
 const dropNodes = async (req, res) => {
     try {
         await prisma.node.deleteMany();
+        await prisma.edge.deleteMany();
         res.json({ message: 'All nodes deleted' });
     } catch (error) {
         res.status(500).json({ 'error': error });

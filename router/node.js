@@ -3,9 +3,12 @@ const router = express.Router();
 
 const node = require('../controller/node');
 
-router.get('/get', node.getNodes);
-router.get('/get/:id', node.getNodeById);
+router.get('/getAll', node.getNodes);
+router.get('/get', node.getNodeById);
 
-router.post('/create', node.createNode); 
+router.post('/create', node.createNode);
+router.post('/update', node.updateNode);
+router.post('/delete', node.deleteNode);
+router.post('/drop', node.dropNodes);
 
 module.exports = router;

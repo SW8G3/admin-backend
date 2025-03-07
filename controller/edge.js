@@ -23,9 +23,19 @@ const appendEdge = async ( edge, nodeID ) => {
     }
 }
 
-// Find edges connected to a node
+// Find all edges in the database
 const getEdges = async (req, res) => {
-    const id = Number(req.params.id);
+    try {
+        const edges = await prisma.edge.findMany();
+        res.json(edges);
+    } catch (error) {
+        res.status(500).json({ 'error': error });
+    }
+}
+
+// Find edges connected to a node
+const getNodeEdges = async (req, res) => {
+    const id = req.body.id;
     try {
         const node = await prisma.node.findUnique({
             where: {
@@ -42,7 +52,7 @@ const getEdges = async (req, res) => {
 }
 
 const getEdgeById = async (req, res) => {
-    const id = Number(req.params.id);
+    const id = req.body.id;
     try {
         const edge = await prisma.edge.findUnique({
             where: {
@@ -81,15 +91,19 @@ const createEdge = async (req, res) => {
 // Remove an edge from a node
 const removeEdge = async ( edge, nodeID ) => {
     try {
-        const node = await prisma.node.update({
+        const node = await prisma.node.findUnique({
+            where: {
+                id: parseInt(nodeID)
+            }
+        });
+        node.edges = node.edges.filter(e => e !== edge.id);
+        await prisma.node.update({
             where: {
                 id: parseInt(nodeID)
             },
             data: {
                 edges: {
-                    disconnect: {
-                        id: edge.id
-                    }
+                    set: node.edges
                 }
             }
         });
@@ -101,7 +115,7 @@ const removeEdge = async ( edge, nodeID ) => {
 
 // Delete an edge
 const deleteEdge = async (req, res) => {
-    const id = Number(req.params.id);
+    const id = req.body.id;
     try {
         const edge = await prisma.edge.findUnique({
             where: {
@@ -125,6 +139,19 @@ const deleteEdge = async (req, res) => {
 const dropEdges = async (req, res) => {
     try {
         await prisma.edge.deleteMany();
+        const nodes = await prisma.node.findMany();
+        for (let node of nodes) {
+            await prisma.node.update({
+                where: {
+                    id: node.id
+                },
+                data: {
+                    edges: {
+                        set: []
+                    }
+                }
+            });
+        }
         res.json({ message: 'All edges deleted' });
     } catch (error) {
         res.status(500).json({ 'error': error });
@@ -135,6 +162,7 @@ const dropEdges = async (req, res) => {
 module.exports = {
     appendEdge,
     getEdges,
+    getNodeEdges,
     getEdgeById,
     createEdge,
     removeEdge,
