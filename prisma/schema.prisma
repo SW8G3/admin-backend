@@ -53,3 +53,9 @@ model Edge {
   //obstructed    Boolean
 }
 
+model Direction {
+  id          Int @id @default(autoincrement())
+  nodeId      Int
+  edgeId      Int
+  imageUrl    String?
+}
