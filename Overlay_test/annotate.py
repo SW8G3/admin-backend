@@ -40,4 +40,4 @@ for image_name in image_files:
 with open(output_json, "w") as file:
     json.dump(annotations, file, indent=4)
 
-print(f"✅ Annotations saved to {output_json}!")
+print(f"Annotations saved to {output_json}!")
