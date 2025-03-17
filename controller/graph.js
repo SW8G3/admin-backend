@@ -23,6 +23,13 @@ const uploadGraph = async (req, res) => {
             data: edges,
         });
 
+        // Drop all directions with no image
+        await prisma.direction.deleteMany({
+            where: {
+                imageUrl: null,
+            },
+        });
+
         for (let i = 0; i < edges.length; i++) {
             // Ensure that database does not contain duplicate directions, i.e., skip iteration if there exists one with the same nodeId and edgeId
             const direction = await prisma.direction.findFirst({
@@ -67,53 +74,6 @@ const downloadGraph = async (req, res) => {
         console.error(error);
     }
 };
-/**
- * 
- * @param {Node} from 
- * @param {Node} to 
- * 
- * @returns {Array<Node>}
- */
-const getRoute = async (from, to) => {
-    
-    const edges = await prisma.edge.findMany();
-    
-    const visited = new Set();
-    const queue = [];
-    const parent = new Map();
-    queue.push(from);
-    visited.add(from);
-    while (queue.length > 0) {
-        const current = queue.shift();
-        if (current === to) {
-            const path = [];
-            let node = to;
-            while (node !== from) {
-                path.push(node);
-                node = parent.get(node);
-            }
-            path.push(from);
-            path.reverse();
-            return path;
-        }
-        const neighbors = edges
-            .filter((edge) => edge.from === current)
-            .map((edge) => edge.to)
-            .concat(
-                edges
-                    .filter((edge) => edge.to === current)
-                    .map((edge) => edge.from)
-            );
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-                parent.set(neighbor, current);
-            }
-        }
-    }
-    return [];
-}
 
 const getDirectionPhoto = async (req, res) => {
     try {
@@ -135,9 +95,16 @@ const getDirectionPhoto = async (req, res) => {
     }
 };
 
+/**
+ * 
+ * @param {Node} from 
+ * @param {Node} to 
+ * 
+ * @returns {Array<Node>}
+ */
+
 module.exports = {
     uploadGraph,
     downloadGraph,
     getDirectionPhoto,
-    getRoute,
 };
