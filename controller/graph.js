@@ -82,54 +82,78 @@ const downloadGraph = async (req, res) => {
     }
 };
 
-function findRoute(from, to, edges, directions) {
-    console.log("From:", from, "To:", to, "Edges:", edges, "Directions:", directions);
-    const visited = new Set();
-    const queue = [];
-    const parent = {};
+/**
+ * A* algorithm to find the shortest path between two nodes.
+ * @param {Object} start - The starting node.
+ * @param {Object} goal - The goal node.
+ * @param {Array<Object>} edges - The list of edges in the graph.
+ * @param {Function} heuristic - The heuristic function to estimate cost.
+ * @returns {Array<Object>} - The shortest path as a list of nodes.
+ */
+function aStarRoute(start, goal, edges, heuristic) {
+    const openSet = new Set([start.id]);
+    const cameFrom = new Map();
 
-    queue.push(from);
-    visited.add(from.id);
+    const gScore = new Map();
+    gScore.set(start.id, 0);
 
-    while (queue.length > 0) {
-        const current = queue.shift();
-        console.log("Current Node:", current);
+    const fScore = new Map();
+    fScore.set(start.id, heuristic(start, goal));
 
-        if (current.id === to.id) {
-            const route = [];
-            let node = to;
-            while (node.id !== from.id) {
-                route.push(node);
-                node = parent[node.id];
-            }
-            route.push(from);
-            return route.reverse();
-        }
-
-        // Traverse edges
-        for (let i = 0; i < edges.length; i++) {
-            if (edges[i].from === current.id && !visited.has(edges[i].to)) {
-                visited.add(edges[i].to);
-                parent[edges[i].to] = current;
-                queue.push({ id: edges[i].to });
-            } else if (edges[i].to === current.id && !visited.has(edges[i].from)) {
-                visited.add(edges[i].from);
-                parent[edges[i].from] = current;
-                queue.push({ id: edges[i].from });
+    while (openSet.size > 0) {
+        // Get the node in openSet with the lowest fScore
+        let current = null;
+        let lowestFScore = Infinity;
+        for (const nodeId of openSet) {
+            const score = fScore.get(nodeId) || Infinity;
+            if (score < lowestFScore) {
+                lowestFScore = score;
+                current = nodeId;
             }
         }
 
-        // Traverse directions (if applicable)
-        for (let i = 0; i < directions.length; i++) {
-            if (directions[i].nodeId === current.id && !visited.has(directions[i].edgeId)) {
-                visited.add(directions[i].edgeId);
-                parent[directions[i].edgeId] = current;
-                queue.push({ id: directions[i].edgeId });
+        if (current === goal.id) {
+            // Reconstruct the path
+            const path = [];
+            while (current) {
+                path.unshift(current);
+                current = cameFrom.get(current);
+            }
+            return path;
+        }
+
+        openSet.delete(current);
+
+        // Get neighbors of the current node
+        const neighbors = edges.filter(edge => edge.from === current || edge.to === current);
+        for (const edge of neighbors) {
+            const neighbor = edge.from === current ? edge.to : edge.from;
+
+            // Ensure gScore for current is initialized
+            const tentativeGScore = (gScore.get(current) ?? Infinity) + (edge.distance || 1);
+
+            if (tentativeGScore < (gScore.get(neighbor) ?? Infinity)) {
+                cameFrom.set(neighbor, current);
+                gScore.set(neighbor, tentativeGScore);
+                fScore.set(neighbor, tentativeGScore + heuristic({ id: neighbor }, goal));
+
+                if (!openSet.has(neighbor)) {
+                    openSet.add(neighbor);
+                }
             }
         }
     }
 
+    // If we reach here, no path was found
     return [];
+}
+
+// Example heuristic function (Euclidean distance)
+function heuristic(nodeA, nodeB) {
+    // Replace with actual coordinates if available
+    const dx = (nodeA.position?.[0] || 0) - (nodeB.position?.[0] || 0);
+    const dy = (nodeA.position?.[1] || 0) - (nodeB.position?.[1] || 0);
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 const getRoute = async (req, res) => {
@@ -153,14 +177,9 @@ const getRoute = async (req, res) => {
             res.status(404).json({ error: "Node not found" });
             return;
         }
-        
+
         const edges = await prisma.edge.findMany();
-        const directions = await prisma.direction.findMany();
-        const route = findRoute(from, to, edges, directions);
-        console.log("From Node:", from);
-        console.log("To Node:", to);
-        console.log("Edges:", edges);
-        console.log("Directions:", directions);
+        const route = aStarRoute(from, to, edges, heuristic);
         res.json({ route });
     } catch (error) {
         res.status(500).json({ error: error });
@@ -180,7 +199,6 @@ const getDirectionPhoto = async (req, res) => {
             res.status(404).json({ error: "Direction not found" });
             return;
         }
-        console.log(direction);
         res.json({ imageUrl: direction.imageUrl });
     } catch (error) {
         res.status(500).json({ error: error });
