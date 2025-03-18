@@ -157,7 +157,6 @@ function heuristic(nodeA, nodeB) {
 }
 
 const getRoute = async (req, res) => {
-
     try {
         const from = await prisma.node.findFirst({
             where: {
@@ -180,7 +179,33 @@ const getRoute = async (req, res) => {
 
         const edges = await prisma.edge.findMany();
         const route = aStarRoute(from, to, edges, heuristic);
-        res.json({ route });
+        // Get directions for each edge in the route
+
+        const directions = [];
+
+        for (let i = 0; i < route.length - 1; i++) {
+            const edge = edges.find(edge => {
+                return (edge.from === route[i] && edge.to === route[i + 1]) ||
+                    (edge.to === route[i] && edge.from === route[i + 1]);
+            });
+            if (!edge) {
+                res.status(500).json({ error: "Edge not found" });
+                return;
+            }
+            const direction = await prisma.direction.findFirst({
+                where: {
+                    nodeId: route[i],
+                    edgeId: edge.id,
+                },
+            });
+            if (!direction) {
+                res.status(404).json({ error: "Direction not found" });
+                return;
+            }
+            directions.push(direction);
+        }
+
+        res.json({ route, directions });
     } catch (error) {
         res.status(500).json({ error: error });
         console.error(error);
