@@ -4,14 +4,23 @@ const prisma = new PrismaClient();
 
 const uploadGraph = async (req, res) => {
     console.log(req.body);
-    // First drop all edges and nodes from the database
+    // Drop every node and drop all edges with no 'fromAImgUrl' and no 'fromBImgUrl
     try {
-        await prisma.edge.deleteMany();
         await prisma.node.deleteMany();
+        await prisma.edge.deleteMany({
+            where: {
+                NOT: [
+                    { fromAImgUrl: { not: null } },
+                    { fromBImgUrl: { not: null } }
+                ]
+            }
+        });
     } catch (error) {
         res.status(500).json({ error: error });
         console.error(error);
     }
+
+    
     // Then upload the new graph
     try {
         const nodes = req.body.nodes;
@@ -22,47 +31,6 @@ const uploadGraph = async (req, res) => {
         await prisma.edge.createMany({
             data: edges,
         });
-
-        // Drop all directions with no image
-        await prisma.direction.deleteMany({
-            where: {
-                imageUrl: null,
-            },
-        });
-
-        for (let i = 0; i < edges.length; i++) {
-            // Check for a direction from the "from" node to the edge
-            const fromDirection = await prisma.direction.findFirst({
-                where: {
-                    nodeId: edges[i].from,
-                    edgeId: edges[i].id,
-                },
-            });
-            if (!fromDirection) {
-                await prisma.direction.create({
-                    data: {
-                        nodeId: edges[i].from,
-                        edgeId: edges[i].id,
-                    },
-                });
-            }
-
-            // Check for a direction from the "to" node to the edge
-            const toDirection = await prisma.direction.findFirst({
-                where: {
-                    nodeId: edges[i].to,
-                    edgeId: edges[i].id,
-                },
-            });
-            if (!toDirection) {
-                await prisma.direction.create({
-                    data: {
-                        nodeId: edges[i].to,
-                        edgeId: edges[i].id,
-                    },
-                });
-            }
-        }
 
         res.json({ message: "Graph uploaded" });
     } catch (error) {
@@ -125,9 +93,9 @@ function aStarRoute(start, goal, edges, heuristic) {
         openSet.delete(current);
 
         // Get neighbors of the current node
-        const neighbors = edges.filter(edge => edge.from === current || edge.to === current);
+        const neighbors = edges.filter(edge => edge.nodeA === current || edge.nodeB === current);
         for (const edge of neighbors) {
-            const neighbor = edge.from === current ? edge.to : edge.from;
+            const neighbor = edge.nodeA === current ? edge.nodeB : edge.nodeA;
 
             // Ensure gScore for current is initialized
             const tentativeGScore = (gScore.get(current) ?? Infinity) + (edge.distance || 1);
@@ -185,8 +153,8 @@ const getRoute = async (req, res) => {
 
         for (let i = 0; i < route.length - 1; i++) {
             const edge = edges.find(edge => {
-                return (edge.from === route[i] && edge.to === route[i + 1]) ||
-                    (edge.to === route[i] && edge.from === route[i + 1]);
+                return (edge.nodeA === route[i] && edge.nodeB === route[i + 1]) ||
+                    (edge.nodeB === route[i] && edge.nodeA === route[i + 1]);
             });
             if (!edge) {
                 res.status(500).json({ error: "Edge not found" });

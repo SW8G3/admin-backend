@@ -5,10 +5,11 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 // which database used and the link through a .env file
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
   // url       = "postgresql://postgres:password@localhost:5432/wayfinder"
 }
 
@@ -20,42 +21,33 @@ datasource db {
 // [] = array
 
 model User {
-  id            Int @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   // org           Organisation? @relation(fields: [orgId], references: [id])
-  orgId         Int?
-  name          String?
-  username      String  
-  password      String
+  orgId    Int?
+  name     String?
+  username String
+  password String
 }
 
 model Node {
-  id            Int @id @default(autoincrement())
-  isWaypoint    Boolean
-  position      Float[]
+  id         Int     @id @default(autoincrement())
+  isWaypoint Boolean
+  position   Float[]
   //hasElevator   Boolean
   //hasStairs     Boolean
   //hasDoor       Boolean
   //searchTags    String[]
   //floor         Int
   //building      String
-  //edges         Int[]     // This is sub-optimal. A better way would be to have a relation to the Edge model
-  // edges         Edge[] // Like this, but the problem is that we can't both have multiple edges on the node and multiple nodes on the edge
 }
 
 model Edge {
-  id            Int @id @default(autoincrement())
-  from       Int       // This is sub-optimal. A better way would be to have a relation to the Node model
-  // nodeA         Node
-  to               Int       // This is sub-optimal. A better way would be to have a relation to the Node model
-  // nodeB         Node
-  distance        Float
+  id          Int     @id @default(autoincrement())
+  nodeA       Int
+  nodeB       Int
+  distance    Float
+  fromAImgUrl String? // The navigational image to display when navigating from node A to node B
+  fromBImgUrl String? // The navigational image to display when navigating from node B to node A
   //clearance     Int
   //obstructed    Boolean
-}
-
-model Direction {
-  id          Int @id @default(autoincrement())
-  nodeId      Int
-  edgeId      Int
-  imageUrl    String?
 }
