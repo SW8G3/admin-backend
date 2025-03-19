@@ -1,0 +1,376 @@
+{
+    "IMG_1234 2.jpg": [
+        {
+            "start": [
+                1678,
+                2643
+            ],
+            "end": [
+                1651,
+                2140
+            ],
+            "text": " Go Straight",
+            "text_pos": [
+                1688,
+                2633
+            ]
+        }
+    ],
+    "IMG_1236 2.jpg": [
+        {
+            "start": [
+                1123,
+                2437
+            ],
+            "end": [
+                1259,
+                1980
+            ],
+            "text": " Move ahead and open the door",
+            "text_pos": [
+                1133,
+                2427
+            ]
+        }
+    ],
+    "IMG_1232 2.jpg": [
+        {
+            "start": [
+                1399,
+                3311
+            ],
+            "end": [
+                1385,
+                2850
+            ],
+            "text": " Open the door for CS department",
+            "text_pos": [
+                1409,
+                3301
+            ]
+        }
+    ],
+    "IMG_1230 2.jpg": [
+        {
+            "start": [
+                1537,
+                3600
+            ],
+            "end": [
+                1371,
+                1578
+            ],
+            "text": " Take the stairs Up",
+            "text_pos": [
+                1547,
+                3590
+            ]
+        }
+    ],
+    "IMG_1229 2.jpg": [
+        {
+            "start": [
+                462,
+                2912
+            ],
+            "end": [
+                1714,
+                2914
+            ],
+            "text": " Turn Right and take stairs Up",
+            "text_pos": [
+                472,
+                2902
+            ]
+        }
+    ],
+    "IMG_1214 2.jpg": [
+        {
+            "start": [
+                895,
+                2657
+            ],
+            "end": [
+                916,
+                2063
+            ],
+            "text": " Go Straight",
+            "text_pos": [
+                905,
+                2647
+            ]
+        }
+    ],
+    "IMG_1237 2.jpg": [
+        {
+            "start": [
+                1025,
+                2831
+            ],
+            "end": [
+                2330,
+                2741
+            ],
+            "text": " Turn right to take elevator",
+            "text_pos": [
+                1035,
+                2821
+            ]
+        }
+    ],
+    "IMG_1213 2.jpg": [
+        {
+            "start": [
+                1218,
+                2997
+            ],
+            "end": [
+                1353,
+                2281
+            ],
+            "text": " Go Straight",
+            "text_pos": [
+                1228,
+                2987
+            ]
+        }
+    ],
+    "IMG_1235 2.jpg": [
+        {
+            "start": [
+                1202,
+                3154
+            ],
+            "end": [
+                1200,
+                2612
+            ],
+            "text": " Go Straight and open the door",
+            "text_pos": [
+                1212,
+                3144
+            ]
+        }
+    ],
+    "IMG_1231 2.jpg": [
+        {
+            "start": [
+                1429,
+                3891
+            ],
+            "end": [
+                1249,
+                1996
+            ],
+            "text": " Take the stairs Up",
+            "text_pos": [
+                1439,
+                3881
+            ]
+        }
+    ],
+    "IMG_1215 2.jpg": [
+        {
+            "start": [
+                1052,
+                3045
+            ],
+            "end": [
+                1171,
+                2556
+            ],
+            "text": " Go Straight and open the door",
+            "text_pos": [
+                1062,
+                3035
+            ]
+        }
+    ],
+    "IMG_1228 2.jpg": [
+        {
+            "start": [
+                1265,
+                3159
+            ],
+            "end": [
+                1295,
+                2570
+            ],
+            "text": " Go Straight",
+            "text_pos": [
+                1275,
+                3149
+            ]
+        }
+    ],
+    "IMG_1217 2.jpg": [
+        {
+            "start": [
+                1497,
+                3238
+            ],
+            "end": [
+                1481,
+                2328
+            ],
+            "text": " Take the stairs down",
+            "text_pos": [
+                1507,
+                3228
+            ]
+        }
+    ],
+    "IMG_1233 2.jpg": [
+        {
+            "start": [
+                1210,
+                2902
+            ],
+            "end": [
+                1328,
+                2122
+            ],
+            "text": " Go straight",
+            "text_pos": [
+                1220,
+                2892
+            ]
+        }
+    ],
+    "IMG_1226 2.jpg": [
+        {
+            "start": [
+                1339,
+                2603
+            ],
+            "end": [
+                2513,
+                2464
+            ],
+            "text": " Turn right",
+            "text_pos": [
+                1349,
+                2593
+            ]
+        }
+    ],
+    "IMG_1224 2.jpg": [
+        {
+            "start": [
+                1330,
+                3248
+            ],
+            "end": [
+                1375,
+                2336
+            ],
+            "text": " Go Straight and climb stairs",
+            "text_pos": [
+                1340,
+                3238
+            ]
+        }
+    ],
+    "IMG_1220 2.jpg": [
+        {
+            "start": [
+                1082,
+                3178
+            ],
+            "end": [
+                1218,
+                2311
+            ],
+            "text": " Go Straight",
+            "text_pos": [
+                1092,
+                3168
+            ]
+        }
+    ],
+    "IMG_1222 2.jpg": [
+        {
+            "start": [
+                1568,
+                2231
+            ],
+            "end": [
+                607,
+                2171
+            ],
+            "text": " Turn left",
+            "text_pos": [
+                1578,
+                2221
+            ]
+        }
+    ],
+    "IMG_1218 2.jpg": [
+        {
+            "start": [
+                1444,
+                3131
+            ],
+            "end": [
+                1444,
+                2051
+            ],
+            "text": " Take the stairs down",
+            "text_pos": [
+                1454,
+                3121
+            ]
+        }
+    ],
+    "IMG_1227 2.jpg": [
+        {
+            "start": [
+                1835,
+                2157
+            ],
+            "end": [
+                1045,
+                2073
+            ],
+            "text": " Turn left",
+            "text_pos": [
+                1845,
+                2147
+            ]
+        }
+    ],
+    "IMG_1223 2.jpg": [
+        {
+            "start": [
+                1732,
+                3027
+            ],
+            "end": [
+                1551,
+                2287
+            ],
+            "text": " climb down the stairs",
+            "text_pos": [
+                1742,
+                3017
+            ]
+        }
+    ],
+    "IMG_1221 2.jpg": [
+        {
+            "start": [
+                1141,
+                1956
+            ],
+            "end": [
+                2166,
+                1892
+            ],
+            "text": " Turn right",
+            "text_pos": [
+                1151,
+                1946
+            ]
+        }
+    ]
+}

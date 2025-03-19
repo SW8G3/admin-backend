@@ -2,8 +2,8 @@ import cv2
 import json
 import os
 
-input_images="/Users/manishkhadka/Project/test"
-output_json="annotations.json"
+input_images="/Users/manishkhadka/Project/admin-backend/Overlay_test/Test_images"
+output_json="/Users/manishkhadka/Project/admin-backend/Overlay_test/Test_images/annotations.json"
 
 image_files=[f for f in os.listdir(input_images) if f.endswith(('.jpg','.png'))]
 

@@ -3,11 +3,15 @@ import json
 import os
 import numpy as np
 
-with open('annotations.json', 'r') as f:
+with open('/Users/manishkhadka/Project/admin-backend/Overlay_test/Test_images/annotations.json', 'r') as f:
     annotations = json.load(f)
     
 def draw_annotations(image_name, annotations):
-    image = cv2.imread(image_name)
+    image_path = os.path.join("/Users/manishkhadka/Project/admin-backend/Overlay_test/Test_images", image_name)
+    if not os.path.exists(image_path):
+        print(f"Error: Image {image_name} not found at {image_path}")
+        return
+    image = cv2.imread(image_path)
 
     for annotation in annotations:
         start_point = tuple(annotation['start'])
