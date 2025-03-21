@@ -33,10 +33,11 @@ model Node {
   id         Int     @id @default(autoincrement())
   isWaypoint Boolean
   position   Float[]
+  searchTags    String[] 
   //hasElevator   Boolean
   //hasStairs     Boolean
   //hasDoor       Boolean
-  //searchTags    String[]
+  
   //floor         Int
   //building      String
 }

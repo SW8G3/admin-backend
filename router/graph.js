@@ -7,8 +7,4 @@ router.get('/download', graph.downloadGraph);
 
 router.post('/upload', graph.uploadGraph);
 
-router.get('/route', graph.getRoute);
-
-router.get('/direction', graph.getDirectionPhoto);
-
 module.exports = router;
