@@ -21,7 +21,7 @@ for image_name in image_files:
             points.append((x, y))  
             print(f"Point added: {(x, y)}")
         if len(points)==2:
-            text=input(f"Enter instruction for {image_name}")
+            text=input(f"Enter instruction for {image_name}: ")
             if image_name not in annotations:
                     annotations[image_name] = []
                     
