@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// the ORM provider
+generator client {
+  provider = "prisma-client-js"
+}
+
+// which database used and the link through a .env file
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // url       = "postgresql://postgres:password@localhost:5432/wayfinder"
+}
+
+// Overall things to understand in these models:
+// @ = used to declare rules in the model
+// default = the default action if the data is left as null. Mostly used to auto increment the IDs
+// relation =  which attributes are connected to eachother, and with which reference
+// ? = the field is not required
+// [] = array
+
+model User {
+  id       Int     @id @default(autoincrement())
+  // org           Organisation? @relation(fields: [orgId], references: [id])
+  orgId    Int?
+  name     String?
+  username String
+  password String
+}
+
+model Node {
+  id         Int      @id @default(autoincrement())
+  isWaypoint Boolean
+  position   Float[]
+  searchTags    String[] @default([])
+  //hasElevator   Boolean
+  //hasStairs     Boolean
+  //hasDoor       Boolean
+
+  //floor         Int
+  //building      String
+}
+
+model Edge {
+  id           Int     @id @default(autoincrement())
+  nodeA        Int
+  nodeB        Int
+  distance     Float
+  isObstructed Boolean @default(false)
+  clearance    Int     @default(0) // The clearance level of the edge
+  fromAImgUrl  String? // The navigational image to display when navigating from node A to node B
+  fromBImgUrl  String? // The navigational image to display when navigating from node B to node A
+  
+}
