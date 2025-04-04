@@ -7,14 +7,7 @@ const uploadGraph = async (req, res) => {
     // Drop every node and drop all edges with no 'fromAImgUrl' and no 'fromBImgUrl
     try {
         await prisma.node.deleteMany();
-        await prisma.edge.deleteMany({
-            where: {
-                NOT: [
-                    { fromAImgUrl: { not: null } },
-                    { fromBImgUrl: { not: null } }
-                ]
-            }
-        });
+        await prisma.edge.deleteMany();
     } catch (error) {
         res.status(500).json({ error: error });
         console.error(error);
