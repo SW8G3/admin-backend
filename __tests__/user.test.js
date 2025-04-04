@@ -1,6 +1,7 @@
 // tests/user.test.ts
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
+const { beforeAll, afterAll, describe, it, expect } = require('@jest/globals');
 
 const prisma = new PrismaClient();
 
