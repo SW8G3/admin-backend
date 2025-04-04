@@ -86,16 +86,15 @@ const updateUser = async (req, res) => {
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
             updateData.password = hashedPassword;
-        }
-        const user = await prisma.user.update({
-            where: {
-                id: Number(id)
-            },
-            data: {
-                username: username,
-                password: hashedPassword
-            }
-        });
+            const user = await prisma.user.update({
+                where: {
+                    id: Number(id)
+                },
+                data: {
+                    username: username,
+                    password: hashedPassword
+                }
+        })};
         res.json({ message: 'User updated successfully', user });
     } catch (error) {
         console.error(error);
