@@ -94,8 +94,9 @@ const updateUser = async (req, res) => {
                     username: username,
                     password: hashedPassword
                 }
-        })};
-        res.json({ message: 'User updated successfully', user });
+            });
+            res.json({ message: 'User updated successfully', user });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
