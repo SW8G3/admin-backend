@@ -31,8 +31,9 @@ model User {
 model Node {
   id         Int      @id @default(autoincrement())
   isWaypoint Boolean
+  qrCode     String?  @unique
   position   Float[]
-  searchTags    String[] @default([])
+  searchTags String[] @default([])
   //hasElevator   Boolean
   //hasStairs     Boolean
   //hasDoor       Boolean
@@ -50,5 +51,4 @@ model Edge {
   clearance    Int     @default(0) // The clearance level of the edge
   fromAImgUrl  String? // The navigational image to display when navigating from node A to node B
   fromBImgUrl  String? // The navigational image to display when navigating from node B to node A
-  
 }
