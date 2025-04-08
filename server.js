@@ -3,21 +3,23 @@ const cors = require('cors');
 const app = express();
 const port = 3001;
 
-//const nodeRouter = require('./router/node');
-//const edgeRouter = require('./router/edge');
 const graphRouter = require('./router/graph');
 const loginRouter = require('./router/login');
 const qrRouter = require('./router/qr');
 
+const corsOptions = {
+    origin: 'http://10.92.0.113:3000',  // Replace with the public IP of your frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  };
+  
 
-app.use(cors());
+
+app.use(cors(corsOptions));
 app.use(express.static(__dirname));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-//app.use('/node', nodeRouter);
-//app.use('/edge', edgeRouter);
 app.use('/graph', graphRouter);
 app.use('/login', loginRouter);
 app.use('/qr', qrRouter);
