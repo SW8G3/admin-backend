@@ -25,6 +25,6 @@ app.use('/login', loginRouter);
 app.use('/qr', qrRouter);
 
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://10.92.0.113:${port}`);
+  });
