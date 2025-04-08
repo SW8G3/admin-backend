@@ -1,9 +1,9 @@
-name: Lint JavaScript
+name: Jest test
 
 on: pull_request
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
         node-version: '22.14'
 
     - name: Install dependencies
-      run: npm install
+        run: npm install
 
-    - name: Run ESLint
-      run: npx eslint .
+    - name: Run tests
+        run: npm run test

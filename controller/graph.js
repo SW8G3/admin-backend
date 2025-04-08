@@ -1,20 +1,25 @@
 const { PrismaClient } = require("@prisma/client");
-//const { json } = require('express');
 const prisma = new PrismaClient();
+const QRCode = require("qrcode");
+
+const generateQRCode = async (link) => {
+    try {
+        const qrCodeDataURL = await QRCode.toDataURL(link);
+        console.log('QR Code generated successfully!');
+        return qrCodeDataURL; // This is a base64-encoded image
+    } catch (error) {
+        console.error('Error generating QR Code:', error);
+        throw error;
+    }
+};
+
 
 const uploadGraph = async (req, res) => {
     console.log(req.body);
     // Drop every node and drop all edges with no 'fromAImgUrl' and no 'fromBImgUrl
     try {
         await prisma.node.deleteMany();
-        await prisma.edge.deleteMany({
-            where: {
-                NOT: [
-                    { fromAImgUrl: { not: null } },
-                    { fromBImgUrl: { not: null } }
-                ]
-            }
-        });
+        await prisma.edge.deleteMany();
     } catch (error) {
         res.status(500).json({ error: error });
         console.error(error);
@@ -25,6 +30,18 @@ const uploadGraph = async (req, res) => {
     try {
         const nodes = req.body.nodes;
         const edges = req.body.edges;
+
+        const baseUrl = "http://localhost:5173/";
+
+        // For each waypoint node, generate a QR code if it does not already exist
+        for (const node of nodes) {
+            if (!node.qrCode && node.isWaypoint) {
+                // TODO: Replace with actual URL eventually
+                const qrCode = await generateQRCode(`${baseUrl}node/${node.id}`);
+                node.qrCode = qrCode;
+            }
+        }
+
         await prisma.node.createMany({
             data: nodes,
         });
