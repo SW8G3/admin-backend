@@ -1,30 +1,34 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan');
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 const graphRouter = require('./router/graph');
 const loginRouter = require('./router/login');
 const qrRouter = require('./router/qr');
 
 const corsOptions = {
-    origin: 'http://10.92.0.113:3000',  // Replace with the public IP of your frontend
+    origin: process.env.FRONTEND_URL || 'http://10.92.0.113:3000', // Use env variable for flexibility
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  };
-  
-
+};
 
 app.use(cors(corsOptions));
-app.use(express.static(__dirname));
+app.use(morgan('dev')); // Add request logging
+app.use(express.static('public')); // Serve static files from 'public' directory
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use('/graph', graphRouter);
 app.use('/login', loginRouter);
 app.use('/qr', qrRouter);
 
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+});
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on http://10.92.0.113:${port}`);
-  });
+});
