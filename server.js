@@ -9,8 +9,11 @@ const loginRouter = require('./router/login');
 const qrRouter = require('./router/qr');
 
 const corsOptions = {
-    origin: process.env.FRONTEND_URL || 'http://10.92.0.113:3000', // Use env variable for flexibility
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: 'http://10.92.0.113:3000',  // Allow requests from the frontend (which is running on this IP and port)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
@@ -25,10 +28,11 @@ app.use('/qr', qrRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+  console.error(err.stack);
+
+  res.status(500).json({ error: 'Internal Server Error' });
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on http://10.92.0.113:${port}`);
+  console.log(`Server is running on http://10.92.0.113:${port}`);
 });
