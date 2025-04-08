@@ -1,0 +1,27 @@
+{
+  "name": "admin-backend",
+  "version": "1.0.0",
+  "main": "graph_test.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SW8G3/admin-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SW8G3/admin-backend/issues"
+  },
+  "homepage": "https://github.com/SW8G3/admin-backend#readme",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "qrcode": "^1.5.4"
+  }
+}
