@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -17,7 +16,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(morgan('dev')); // Add request logging
 app.use(express.static('public')); // Serve static files from 'public' directory
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +25,7 @@ app.use('/login', loginRouter);
 app.use('/qr', qrRouter);
 
 // Global error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err.stack);
 
   res.status(500).json({ error: 'Internal Server Error' });
