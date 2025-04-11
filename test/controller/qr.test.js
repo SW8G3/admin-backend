@@ -1,83 +1,68 @@
-const { getQrCode } = require("../../controller/qr");
-const { PrismaClient } = require("@prisma/client");
-
-
 jest.mock("@prisma/client", () => {
-    const mockPrisma = {
+    const mockFindUnique = jest.fn(); 
+    return {
+      PrismaClient: jest.fn(() => ({
         node: {
-            findUnique: jest.fn(),
+          findUnique: mockFindUnique,
         },
+      })),
+      __mockFindUnique: mockFindUnique,
     };
-    return { PrismaClient: jest.fn(() => mockPrisma) };
-});
-
-const prisma = new PrismaClient();
-
-describe("getQrCode", () => {
-    let req, res;
-
+  });
+  
+  const { getQrCode } = require("./qr");
+  const { __mockFindUnique } = require("@prisma/client");
+  
+  describe("getQrCode", () => {
+    let mockReq, mockRes;
+  
     beforeEach(() => {
-        req = { params: { id: "1" } };
-        res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-            setHeader: jest.fn(),
-            send: jest.fn(),
-        };
+      mockReq = {
+        params: { id: "1" },
+      };
+      mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+        send: jest.fn(),
+        setHeader: jest.fn(),
+      };
+      __mockFindUnique.mockReset(); 
     });
-
-    afterEach(() => {
-        jest.clearAllMocks();
+  
+    test("Should return 404 if node not found", async () => {
+      __mockFindUnique.mockResolvedValue(null);
+  
+      await getQrCode(mockReq, mockRes);
+  
+      expect(mockRes.status).toHaveBeenCalledWith(404);
+      expect(mockRes.json).toHaveBeenCalledWith({ error: "Node not found" });
     });
-
-    it("should return 404 if the node is not found", async () => {
-        prisma.node.findUnique.mockResolvedValue(null);
-
-        await getQrCode(req, res);
-
-        expect(prisma.node.findUnique).toHaveBeenCalledWith({
-            where: { id: 1 },
-        });
-        expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({ error: "Node not found" });
+  
+    test("Should return 404 if QR code not found", async () => {
+      __mockFindUnique.mockResolvedValue({ id: 1 });
+  
+      await getQrCode(mockReq, mockRes);
+  
+      expect(mockRes.status).toHaveBeenCalledWith(404);
+      expect(mockRes.json).toHaveBeenCalledWith({ error: "QR code not found" });
     });
-
-    it("should return 404 if the QR code is not found", async () => {
-        prisma.node.findUnique.mockResolvedValue({ qrCode: null });
-
-        await getQrCode(req, res);
-
-        expect(prisma.node.findUnique).toHaveBeenCalledWith({
-            where: { id: 1 },
-        });
-        expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({ error: "QR code not found" });
+  
+    test("Should return QR code image if found", async () => {
+      const fakeBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA";
+      __mockFindUnique.mockResolvedValue({ id: 1, qrCode: fakeBase64 });
+  
+      await getQrCode(mockReq, mockRes);
+  
+      expect(mockRes.setHeader).toHaveBeenCalledWith("Content-Type", "image/png");
+      expect(mockRes.send).toHaveBeenCalledWith(Buffer.from(fakeBase64.split(",")[1], "base64"));
     });
-
-    it("should return the QR code as an image", async () => {
-        const mockQrCode = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA";
-        prisma.node.findUnique.mockResolvedValue({ qrCode: mockQrCode });
-
-        await getQrCode(req, res);
-
-        expect(prisma.node.findUnique).toHaveBeenCalledWith({
-            where: { id: 1 },
-        });
-        expect(res.setHeader).toHaveBeenCalledWith("Content-Type", "image/png");
-        expect(res.send).toHaveBeenCalledWith(
-            Buffer.from(mockQrCode.split(",")[1], "base64")
-        );
+  
+    test("Should return 500 on error", async () => {
+      __mockFindUnique.mockRejectedValue(new Error("DB error"));
+  
+      await getQrCode(mockReq, mockRes);
+  
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+      expect(mockRes.json).toHaveBeenCalledWith({ error: "Internal server error" });
     });
-
-    it("should return 500 if an error occurs", async () => {
-        prisma.node.findUnique.mockRejectedValue(new Error("Database error"));
-
-        await getQrCode(req, res);
-
-        expect(prisma.node.findUnique).toHaveBeenCalledWith({
-            where: { id: 1 },
-        });
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: "Internal server error" });
-    });
-});
+  });
