@@ -32,6 +32,10 @@ const uploadGraph = async (req, res) => {
         const edges = req.body.edges;
 
         const baseUrl = "https://10.92.0.113:5173/"; // URL of mobile-frontend
+        
+        const nodeIds = nodes.map((node) => node.id);
+        const connectedNodeIds = new Set();
+
 
         // For each waypoint node, generate a QR code if it does not already exist
         for (const node of nodes) {
