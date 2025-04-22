@@ -36,6 +36,24 @@ const uploadGraph = async (req, res) => {
         const nodeIds = nodes.map((node) => node.id);
         const connectedNodeIds = new Set();
 
+        //Collect all connected node ids from edges
+        for (const edge of edges) {
+            connectedNodeIds.add(edge.source);
+            connectedNodeIds.add(edge.target);
+        }
+
+        //Find stray nodes (nodes without any edges)
+        const strayNodes = nodeIds.filter((nodeId) => !connectedNodeIds.has(nodeId));
+        if (strayNodes.length > 0) {
+            res.status(400).json({
+                error: `Stray nodes detected.
+                The following node IDs are not connected to any edges: ${strayNodes.join(",")}`,
+            });
+            return;
+            }
+        
+
+
 
         // For each waypoint node, generate a QR code if it does not already exist
         for (const node of nodes) {
