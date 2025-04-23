@@ -16,7 +16,7 @@ const generateQRCode = async (link) => {
 
 const uploadGraph = async (req, res) => {
     console.log(req.body);
-    // Drop every node and drop all edges with no 'fromAImgUrl' and no 'fromBImgUrl
+    // Drop every node and edge
     try {
         await prisma.node.deleteMany();
         await prisma.edge.deleteMany();
@@ -31,13 +31,13 @@ const uploadGraph = async (req, res) => {
         const nodes = req.body.nodes;
         const edges = req.body.edges;
 
-        const baseUrl = "http://localhost:5173/";
+        const baseUrl = "https://10.92.0.113:5173/"; // URL of mobile-frontend
 
         // For each waypoint node, generate a QR code if it does not already exist
         for (const node of nodes) {
             if (!node.qrCode && node.isWaypoint) {
                 // TODO: Replace with actual URL eventually
-                const qrCode = await generateQRCode(`${baseUrl}node/${node.id}`);
+                const qrCode = await generateQRCode(`${baseUrl}destination/node/${node.id}`);
                 node.qrCode = qrCode;
             }
         }
