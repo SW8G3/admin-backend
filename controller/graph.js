@@ -38,19 +38,19 @@ const uploadGraph = async (req, res) => {
 
         //Collect all connected node ids from edges
         for (const edge of edges) {
-            connectedNodeIds.add(edge.source);
-            connectedNodeIds.add(edge.target);
+            connectedNodeIds.add(edge.from);
+            connectedNodeIds.add(edge.to);
         }
 
         //Find stray nodes (nodes without any edges)
         const strayNodes = nodeIds.filter((nodeId) => !connectedNodeIds.has(nodeId));
         if (strayNodes.length > 0) {
+            console.log("Stray nodes detected:", strayNodes);
             res.status(400).json({
-                error: `Stray nodes detected.
-                The following node IDs are not connected to any edges: ${strayNodes.join(",")}`,
+                error: `Stray nodes detected. The following node IDs are not connected to any edges: ${strayNodes.join(",")}`,
             });
             return;
-            }
+        }
         
 
 
