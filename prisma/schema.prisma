@@ -49,6 +49,4 @@ model Edge {
   distance     Float
   isObstructed Boolean @default(false)
   clearance    Int     @default(0) // The clearance level of the edge
-  fromAImgUrl  String? // The navigational image to display when navigating from node A to node B
-  fromBImgUrl  String? // The navigational image to display when navigating from node B to node A
 }
