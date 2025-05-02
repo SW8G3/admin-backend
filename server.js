@@ -8,7 +8,7 @@ const loginRouter = require('./router/login');
 const qrRouter = require('./router/qr');
 
 const corsOptions = {
-  origin: 'http://10.92.0.113:3000',  // Allow requests from the frontend (which is running on this IP and port)
+  origin: ['http://10.92.0.113:3000', 'http://localhost:3000'],  // Allow requests from the frontend (which is running on this IP and port)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
