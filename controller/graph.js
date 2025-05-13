@@ -25,34 +25,27 @@ const uploadGraph = async (req, res) => {
         console.error(error);
     }
 
-    
+
     // Then upload the new graph
     try {
         const nodes = req.body.nodes;
         const edges = req.body.edges;
 
         const baseUrl = "https://10.92.0.113:5173/"; // URL of mobile-frontend
-        
+
+        // Get all node ids that are not connected to any edge
         const nodeIds = nodes.map((node) => node.id);
-        const connectedNodeIds = new Set();
+        const edgeNodeIds = edges.flatMap((edge) => [edge.nodeA, edge.nodeB]);
+        const unconnectedNodeIds = nodeIds.filter((id) => !edgeNodeIds.includes(id));
 
-        //Collect all connected node ids from edges
-        for (const edge of edges) {
-            connectedNodeIds.add(edge.from);
-            connectedNodeIds.add(edge.to);
-        }
-
-        //Find stray nodes (nodes without any edges)
-        const strayNodes = nodeIds.filter((nodeId) => !connectedNodeIds.has(nodeId));
-        if (strayNodes.length > 0) {
-            console.log("Stray nodes detected:", strayNodes);
-            res.status(400).json({
-                error: `Stray nodes detected. The following node IDs are not connected to any edges: ${strayNodes.join(",")}`,
+        // Return with an error if there are unconnected nodes
+        if (unconnectedNodeIds.length > 0) {
+            return res.status(400).json({
+                error: "Graph contains unconnected nodes",
+                unconnectedNodeIds: unconnectedNodeIds,
             });
-            return;
         }
         
-
 
 
         // For each waypoint node, generate a QR code if it does not already exist
