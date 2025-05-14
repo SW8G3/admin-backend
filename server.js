@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/graph', graphRouter);
-app.use('/login', loginRouter);
+app.use('/auth', loginRouter);
 app.use('/qr', qrRouter);
 
 // Global error handler
