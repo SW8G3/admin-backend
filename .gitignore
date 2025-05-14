@@ -27,3 +27,4 @@ P2---Website/*
 .env
 /prisma/migrations
 /coverage
+/backup

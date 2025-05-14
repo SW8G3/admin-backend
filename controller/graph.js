@@ -30,7 +30,7 @@ const uploadGraph = async (req, res) => {
         const backupFilePath = path.join(__dirname, "..", "backup", `graph-backup-${timestamp}.json`);
         fs.writeFileSync(backupFilePath, graphData);
         console.log(`Graph backup created at ${backupFilePath}`);
-        
+
     } catch (error) {
         console.error("Error creating graph backup:", error);
         return res.status(500).json({ error: "Error creating graph backup" });
@@ -87,7 +87,7 @@ const uploadGraph = async (req, res) => {
                 unconnectedNodeIds: unconnectedNodeIds,
             });
         }
-        
+
 
 
         // For each waypoint node, generate a QR code if it does not already exist
