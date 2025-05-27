@@ -15,7 +15,49 @@ const generateQRCode = async (link) => {
 
 
 const uploadGraph = async (req, res) => {
+    // Backup existing graph and dump it to a file as JSON
+    try {
+        const nodes = await prisma.node.findMany();
+        const edges = await prisma.edge.findMany();
+
+        // Convert to JSON
+        const graphData = JSON.stringify({ nodes, edges }, null, 2);
+
+        // Write to new file with timestamp
+        const fs = require("fs");
+        const path = require("path");
+        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const backupFilePath = path.join(__dirname, "..", "backup", `graph-backup-${timestamp}.json`);
+        fs.writeFileSync(backupFilePath, graphData);
+        console.log(`Graph backup created at ${backupFilePath}`);
+
+    } catch (error) {
+        console.error("Error creating graph backup:", error);
+        return res.status(500).json({ error: "Error creating graph backup" });
+    }
+
+    // Check if the request body contains nodes and edges
+    if (!req.body || !req.body.nodes || !req.body.edges) {
+        return res.status(400).json({ error: "Invalid request body" });
+    }
     console.log(req.body);
+
+    const nodes = req.body.nodes;
+    const edges = req.body.edges;
+
+    // Get all node ids that are not connected to any edge
+    const nodeIds = nodes.map((node) => node.id);
+    const edgeNodeIds = edges.flatMap((edge) => [edge.nodeA, edge.nodeB]);
+    const unconnectedNodeIds = nodeIds.filter((id) => !edgeNodeIds.includes(id));
+
+    // Return with an error if there are unconnected nodes
+    if (unconnectedNodeIds.length > 0) {
+        return res.status(400).json({
+            error: "Graph contains unconnected nodes",
+            unconnectedNodeIds: unconnectedNodeIds,
+        });
+    }
+
     // Drop every node and edge
     try {
         await prisma.node.deleteMany();
@@ -25,13 +67,28 @@ const uploadGraph = async (req, res) => {
         console.error(error);
     }
 
-    
+
     // Then upload the new graph
     try {
         const nodes = req.body.nodes;
         const edges = req.body.edges;
 
         const baseUrl = "https://10.92.0.113:5173/"; // URL of mobile-frontend
+
+        // Get all node ids that are not connected to any edge
+        const nodeIds = nodes.map((node) => node.id);
+        const edgeNodeIds = edges.flatMap((edge) => [edge.nodeA, edge.nodeB]);
+        const unconnectedNodeIds = nodeIds.filter((id) => !edgeNodeIds.includes(id));
+
+        // Return with an error if there are unconnected nodes
+        if (unconnectedNodeIds.length > 0) {
+            return res.status(400).json({
+                error: "Graph contains unconnected nodes",
+                unconnectedNodeIds: unconnectedNodeIds,
+            });
+        }
+
+
 
         // For each waypoint node, generate a QR code if it does not already exist
         for (const node of nodes) {

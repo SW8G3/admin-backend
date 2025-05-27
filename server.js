@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3001;
+const host = process.env.HOST || 'localhost';
 
 const graphRouter = require('./router/graph');
 const loginRouter = require('./router/login');
@@ -21,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/graph', graphRouter);
-app.use('/login', loginRouter);
+app.use('/auth', loginRouter);
 app.use('/qr', qrRouter);
 
 // Global error handler
@@ -31,6 +32,6 @@ app.use((err, req, res) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on http://10.92.0.113:${port}`);
+app.listen(port, host, () => {
+  console.log(`Server is running on http://${host}:${port}`);
 });
